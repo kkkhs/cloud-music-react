@@ -18,6 +18,7 @@ import { sleep } from 'antd-mobile/es/utils/sleep';
 import { useCookies } from 'react-cookie';
 import * as path from 'path';
 import { MyPlayHistory } from '../pages/my/my-play-history';
+import { MainPage } from '../pages/main-page';
 
 export const BaseRouter = () => {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ export const BaseRouter = () => {
 
   // 鉴权
   useEffect(() => {
+    // console.log(location.pathname);
     const isLoggedIn = !!cookies['__csrf'];
 
     if (!isLoggedIn && location.pathname !== '/login') {
@@ -41,11 +43,11 @@ export const BaseRouter = () => {
     // 默认路由
     {
       path: '*',
-      element: <Navigate to="/find" replace />,
+      element: <Navigate to="/find" />,
     },
     {
       path: '/',
-      element: <BottomTabBar />,
+      element: <MainPage />,
       children: [
         {
           path: '/find',

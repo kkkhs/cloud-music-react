@@ -4,6 +4,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { TabBar } from 'antd-mobile';
 import { Player } from './player/player';
 import { TopNavBar } from './top-nav-bar';
+import { Navigate } from 'react-router';
 
 export const tabs = [
   {
@@ -38,21 +39,18 @@ export const BottomTabBar = () => {
   };
 
   return (
-    <div className={'h-full w-full'}>
-      <Outlet></Outlet>
-      <div className={'absolute bottom-0 w-full'}>
-        <TabBar
-          className={'bg-white'}
-          activeKey={pathname}
-          onChange={(value) => {
-            setRouteActive(value);
-          }}
-        >
-          {tabs.map((item) => (
-            <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
-          ))}
-        </TabBar>
-      </div>
+    <div className={'absolute bottom-0 w-full'}>
+      <TabBar
+        className={'bg-white'}
+        activeKey={pathname}
+        onChange={(value) => {
+          setRouteActive(value);
+        }}
+      >
+        {tabs.map((item) => (
+          <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
+        ))}
+      </TabBar>
     </div>
   );
 };

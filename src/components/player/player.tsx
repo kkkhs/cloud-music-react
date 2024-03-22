@@ -14,18 +14,25 @@ import cdImage from 'assets/R.png';
 import { Slider } from 'antd-mobile';
 import { CSSTransition } from 'react-transition-group';
 import {
+  BugOutlined,
   DashOutlined,
+  HeartOutlined,
+  MessageOutlined,
+  MoreOutlined,
   PauseCircleFilled,
   PlayCircleFilled,
   StepBackwardOutlined,
   StepForwardOutlined,
   ThunderboltOutlined,
+  UnorderedListOutlined,
 } from '@ant-design/icons';
 import { useLyric } from './use-lyric';
 import BetterScroll, { BScrollInstance } from 'better-scroll';
 import useMiddleInteractive from './use-middle-interactive';
 import { MiniPlayer } from './mini-player';
 import usePlayHistory from './use-play-history';
+import { PlayList } from './play-list';
+import { useLike } from './use-like';
 
 interface BarRef {
   setOffset: (offset: number) => void;
@@ -34,36 +41,10 @@ interface BarRef {
 export const Player = () => {
   const audioRef: RefObject<HTMLAudioElement> = useRef(null);
   const barRef: RefObject<BarRef> = useRef(null);
-  const miniPlayerRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [songReady, setSongReady] = useState(false);
   const [progressChanging, setProgressChanging] = useState(false);
-
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const [bsObj, setBsObj] = useState<BetterScroll>();
-
-  const initBs = () => {
-    setBsObj(() => {
-      return new BetterScroll(wrapperRef.current as HTMLElement, {
-        observeDOM: true,
-        click: true,
-      });
-    });
-  };
-  //  对象初始化
-  useEffect(() => {
-    initBs(); // 初始化实例
-    console.log('bsObj:', bsObj);
-    return () => {
-      if (bsObj && bsObj.destroy) {
-        bsObj.destroy(); // 销毁
-      }
-    };
-  }, []);
-
-  const changeBottom = (bool: boolean) => {
-    // miniPlayerRef.current?.changeBottom(bool);
-  };
+  const [showPlaylist, setShowPlaylist] = useState(false);
 
   // redux
   const playState = useSelector((state: RootState) => state.playState);
@@ -78,8 +59,8 @@ export const Player = () => {
   // hooks
   const { changeMode } = useMode();
   const { cdWrapperRef, cdRef, cdCls } = useCd();
-  const { currentLyric, currentLineNum, lyricListRef, playingLyric, playLyric, stopLyric } =
-    useLyric({ songReady, currentTime, wrapperRef, bsObj });
+  const { currentLyric, currentLineNum, playingLyric, lyricContainerRef, playLyric, stopLyric } =
+    useLyric({ songReady, currentTime });
   const {
     currentShow,
     middleLStyle,
@@ -89,20 +70,9 @@ export const Player = () => {
     onMiddleTouchEnd,
   } = useMiddleInteractive();
   const { savePlay } = usePlayHistory();
-
-  // useEffect(() => {
-  //   if (wrapperRef.current && bsObj && currentLyric) {
-  //     bsObj.scrollToElement(
-  //       wrapperRef.current?.children?.[currentLyric.curLine] as HTMLElement,
-  //       1000,
-  //       0,
-  //       0,
-  //     );
-  //   }
-  // }, [currentLyric]);
+  const { isLiked, toggleLike } = useLike();
 
   // console.log(currentLineNum);
-  // console.log(middleRStyle);
 
   // 进度 0-1
   const progress = currentTime / (currentSong?.dt / 1000);
@@ -400,20 +370,21 @@ export const Player = () => {
                       </div>
                     </div>
                     <div
-                      ref={wrapperRef}
+                      ref={lyricContainerRef}
                       style={middleRStyle}
-                      className="inline-block align-top w-full h-full overflow-hidden"
+                      className="inline-block align-top w-full h-full overflow-y-scroll"
                     >
-                      <div className="w-4/5 my-0 mx-auto overflow-hidden text-center">
+                      <div className="w-4/5 my-0 mx-auto text-center">
                         {currentLyric ? (
-                          <div ref={lyricListRef}>
+                          <div>
                             {currentLyric.lines.map((line, index) => (
-                              <p
+                              <div
                                 className={`leading-8 text-lg my-2 ${currentLineNum === index ? 'text-white' : ' text-white/50'}`}
                                 key={line.time}
+                                data-line={index} //自定义数据存储
                               >
                                 {line.txt}
-                              </p>
+                              </div>
                             ))}
                           </div>
                         ) : null}
@@ -428,6 +399,12 @@ export const Player = () => {
                       <span
                         className={`inline-block align-middle my-0 mx-1 w-2 h-2 rounded-full bg-opacity-50 bg-white ${currentShow === 'lyric' ? 'w-4 bg-opacity-80' : ''}`}
                       ></span>
+                    </div>
+                    <div className={'flex text-2xl justify-between items-center px-14 mt-4 mb-2'}>
+                      <HeartOutlined />
+                      <BugOutlined />
+                      <MessageOutlined />
+                      <MoreOutlined />
                     </div>
                     <div className=" flex items-center w-full my-0 mx-auto py-2 px-4">
                       <span className=" w-11 grow-0 shrink-0 basis-11 text-sm text-left">
@@ -460,15 +437,25 @@ export const Player = () => {
                         {playing ? <PauseCircleFilled /> : <PlayCircleFilled />}
                       </span>
                       <StepForwardOutlined onClick={next} />
-                      <HeartOutline fontSize={24} />
+                      <UnorderedListOutlined
+                        onClick={() => setShowPlaylist(true)}
+                        className=" ml-2 text-2xl"
+                      />
                     </div>
                   </div>
                 </div>
               ) : null}
             </div>
           ) : (
-            <MiniPlayer progress={progress} togglePlay={togglePlay} />
+            <MiniPlayer
+              progress={progress}
+              togglePlay={togglePlay}
+              prev={prev}
+              next={next}
+              setShowPlaylist={setShowPlaylist}
+            />
           )}
+          <PlayList showPlaylist={showPlaylist} setShowPlaylist={setShowPlaylist} />
           <audio
             ref={audioRef}
             onPause={pause}

@@ -27,6 +27,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.error('Failed to fetch user data:', error);
       });
   };
+
   useEffect(() => {
     // 检查用户是否已登录
     setIsLoggedIn(!!cookies['__csrf']);

@@ -86,7 +86,7 @@ export const PlayList = ({ showPlaylist, setShowPlaylist }: PlayListProps) => {
         bodyStyle={{
           borderTopLeftRadius: '8px',
           borderTopRightRadius: '8px',
-          minHeight: '40vh',
+          minHeight: '50vh',
           maxHeight: '50vh',
         }}
       >
@@ -105,7 +105,7 @@ export const PlayList = ({ showPlaylist, setShowPlaylist }: PlayListProps) => {
             <DeleteOutlined className={'text-xl'} onClick={clear} />
           </div>
         </div>
-        <div className={' h-72 overflow-y-scroll'}>
+        <div className={'h-[350px] overflow-y-scroll'}>
           <div className={'h-fit'}>
             {playList.map((song, index) => (
               <>

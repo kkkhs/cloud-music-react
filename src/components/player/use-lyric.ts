@@ -10,20 +10,35 @@ import BetterScroll, { BScrollInstance } from 'better-scroll';
 interface UseLyricProps {
   songReady: boolean;
   currentTime: number;
-  wrapperRef: React.RefObject<HTMLDivElement>;
-  bsObj: BScrollInstance | undefined;
 }
 
-export const useLyric = ({ songReady, currentTime, wrapperRef, bsObj }: UseLyricProps) => {
+export const useLyric = ({ songReady, currentTime }: UseLyricProps) => {
   const [currentLyric, setCurrentLyric] = useState<null | Lyric>(null);
   const [currentLineNum, setCurrentLineNum] = useState(0);
-  const [playingLyric, setPlayingLyric] = useState('');
-  const lyricScrollRef = wrapperRef;
-  const lyricListRef = useRef(null);
+  const [playingLyric, setPlayingLyric] = useState(''); // 正在播放的歌词
 
-  const playState = useSelector((state: RootState) => state.playState);
   const currentSong: Song = useSelector(getCurrentSong);
   let lyric = '';
+
+  const lyricContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (lyricContainerRef.current && currentLineNum !== 0) {
+      const currentLineElement = lyricContainerRef.current.querySelector(
+        `[data-line="${currentLineNum}"]`,
+      ) as HTMLElement;
+      if (currentLineElement) {
+        const containerHeight = lyricContainerRef.current.offsetHeight; //获取歌词容器的高度
+        const lineHeight = currentLineElement.offsetHeight; //获取当前行的高度
+        const scrollOffset = currentLineElement.offsetTop - containerHeight / 2 + lineHeight / 2;
+        console.log(containerHeight, lineHeight, scrollOffset);
+        lyricContainerRef.current.scrollTo({
+          top: scrollOffset,
+          behavior: 'smooth',
+        });
+      }
+    }
+  }, [currentLineNum]);
 
   useEffect(() => {
     //防止切歌歌词跳动:
@@ -61,32 +76,16 @@ export const useLyric = ({ songReady, currentTime, wrapperRef, bsObj }: UseLyric
 
   // 歌词处理函数
   function handleLyric({ lineNum, txt }: { lineNum: number; txt: string }) {
-    console.log(lineNum);
+    // console.log(lineNum);
     setCurrentLineNum(lineNum);
     setPlayingLyric(txt); //当前播放歌词
-    const listEl: HTMLElement | null = lyricListRef.current; // 拿到list dom实例
-    if (listEl === null) {
-      return;
-    } else {
-      if (lineNum > 7) {
-        const lineEl = (listEl as HTMLElement).children[lineNum - 7];
-        if (lineEl instanceof HTMLElement) {
-          // @ts-ignore
-          // bsObj.scrollToElement(lineEl, 1000);
-        }
-      } else {
-        // @ts-ignore
-        // bsObj.scrollTo(0, 0, 1000);
-      }
-    }
   }
 
   return {
     currentLyric,
     currentLineNum,
-    lyricScrollRef,
-    lyricListRef,
     playingLyric,
+    lyricContainerRef,
     playLyric,
     stopLyric,
   };

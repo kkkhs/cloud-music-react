@@ -6,16 +6,18 @@ import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store from './store';
 import { AuthProvider } from './context/auth-context';
-import 'lib-flexible';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
-    <AuthProvider>
-      <Provider store={store}>
-        <App />
-      </Provider>
-    </AuthProvider>
+    <QueryClientProvider client={new QueryClient()}>
+      <AuthProvider>
+        <Provider store={store}>
+          <App />
+        </Provider>
+      </AuthProvider>
+    </QueryClientProvider>
   </React.StrictMode>,
 );
 

@@ -7,14 +7,8 @@ import {
   fetchLoginData,
 } from '../../api/login';
 import { useNavigate } from 'react-router-dom';
-import {
-  AppleFilled,
-  AppleOutlined,
-  MobileFilled,
-  PhoneOutlined,
-  PhoneTwoTone,
-} from '@ant-design/icons';
-import { PhoneFill } from 'antd-mobile-icons';
+import { AppleFilled, PhoneOutlined } from '@ant-design/icons';
+import { useAuth } from '../../context/auth-context';
 
 export const LoginPage = () => {
   const phoneNumberPattern = /^1[3456789]\d{9}$/;
@@ -24,6 +18,7 @@ export const LoginPage = () => {
   const [buttonText, setButtonText] = useState('获取验证码');
   const [countdown, setCountDown] = useState(60);
   const history = useNavigate();
+  const { login: ContextLogin } = useAuth();
 
   // 正则匹配是否为大陆手机号
   function isPhoneNumber(phoneNumber: string) {
@@ -88,6 +83,7 @@ export const LoginPage = () => {
                   content: '登陆成功',
                   position: 'top',
                 });
+                ContextLogin();
                 history('/find');
               }
             })
@@ -116,6 +112,7 @@ export const LoginPage = () => {
   // 游客登陆
   const anonimousLogin = () => {
     fetchAnonimousData().then(() => {
+      ContextLogin();
       history('/find');
     });
   };
