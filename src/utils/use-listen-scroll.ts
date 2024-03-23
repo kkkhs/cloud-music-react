@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 export const useScrollListener = (scrollThreshold: number) => {
   const scrollRef = useRef<HTMLDivElement>(null); // 修改此行
@@ -7,8 +8,7 @@ export const useScrollListener = (scrollThreshold: number) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (scrollRef.current && scrollRef.current) {
-        // 修改此行
+      if (scrollRef.current) {
         const scrollTop = scrollRef.current.scrollTop; // 修改此行
 
         setScrollY(scrollTop);
@@ -22,14 +22,14 @@ export const useScrollListener = (scrollThreshold: number) => {
       }
     };
 
-    if (scrollRef.current && scrollRef.current) {
+    if (scrollRef.current) {
       // 修改此行
       scrollRef.current.addEventListener('scroll', handleScroll); // 修改此行
     }
 
     // 清除监听器
     return () => {
-      if (scrollRef.current && scrollRef.current) {
+      if (scrollRef.current) {
         // 修改此行
         scrollRef.current.removeEventListener('scroll', handleScroll); // 修改此行
       }

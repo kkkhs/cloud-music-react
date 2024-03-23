@@ -13,7 +13,7 @@ export const PlaylistDetail = () => {
   const { id } = useParams();
   const history = useNavigate();
   const { scrollY, titleChange, scrollRef } = useScrollListener(120);
-
+  console.log(scrollRef.current);
   useEffect(() => {
     fetchPlaylistDetailData(Number(id)).then((v) => {
       setPlaylist(v.data.playlist);
