@@ -12,7 +12,7 @@ import { useDispatch } from 'react-redux';
 const selects = [
   {
     name: '每日推荐',
-    url: '/recommendedList',
+    url: '/dailySongs',
     icon: <CalendarOutline />,
   },
   {

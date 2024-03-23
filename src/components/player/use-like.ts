@@ -11,7 +11,6 @@ export const useLike = (): {
   const { user } = useAuth();
   const uid = user?.userId;
 
-  const queryClient = useQueryClient();
   const {
     data: likeList,
     isLoading,

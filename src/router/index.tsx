@@ -20,6 +20,7 @@ import * as path from 'path';
 import { MyPlayHistory } from '../pages/my/my-play-history';
 import { MainPage } from '../pages/main-page';
 import { CommentMusic } from '../components/comment/comment-music';
+import { DailyRecommendSongs } from '../pages/find/recommend/daily-recommend-songs';
 
 export const BaseRouter = () => {
   const navigate = useNavigate();
@@ -91,6 +92,10 @@ export const BaseRouter = () => {
     {
       path: 'playHistory',
       element: <MyPlayHistory />,
+    },
+    {
+      path: 'dailySongs',
+      element: <DailyRecommendSongs />,
     },
   ]);
 

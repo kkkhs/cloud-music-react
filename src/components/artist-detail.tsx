@@ -10,6 +10,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { Image, NavBar, SpinLoading } from 'antd-mobile';
 import { MusicList } from './music-list';
+import { useScrollListener } from '../utils/use-listen-scroll';
 
 export const ArtistDetail = () => {
   const { id } = useParams();
@@ -17,6 +18,7 @@ export const ArtistDetail = () => {
   const [artist, setArtist] = useState<Artist | null>(null);
   const [follows, setFollows] = useState<Follows | null>(null);
   const [TopSong, setTopSong] = useState<Song[]>([]);
+  const { scrollY, titleChange, scrollRef } = useScrollListener(140);
 
   useEffect(() => {
     fetchArtistDetailData(Number(id)).then((v) => {
@@ -30,9 +32,15 @@ export const ArtistDetail = () => {
   const back = () => history(-1);
 
   return (
-    <div className={'fixed top-0 bottom-0 left-0 right-0 z-10 bg-gray-white overflow-scroll'}>
-      <NavBar className={'fixed z-10 text-white'} onBack={back}>
-        {artist?.artist?.name}
+    <div
+      ref={scrollRef}
+      className={'fixed top-0 bottom-0 left-0 right-0 z-10 bg-gray-white overflow-scroll'}
+    >
+      <NavBar
+        className={`fixed z-20 w-full transition-all ease-in-out duration-1000  ${titleChange ? 'bg-white text-black rounded-b-lg' : 'text-white'}`}
+        onBack={back}
+      >
+        {titleChange ? <span>{artist?.artist?.name}</span> : null}
       </NavBar>
       {artist ? (
         <>

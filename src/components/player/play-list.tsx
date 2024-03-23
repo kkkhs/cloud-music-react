@@ -9,10 +9,12 @@ import {
   CloseOutlined,
   DashOutlined,
   DeleteOutlined,
+  HeartFilled,
   HeartOutlined,
   ThunderboltOutlined,
 } from '@ant-design/icons';
 import { HistogramOutline, UndoOutline } from 'antd-mobile-icons';
+import { useLike } from './use-like';
 
 interface PlayListProps {
   showPlaylist: boolean;
@@ -25,6 +27,8 @@ export const PlayList = ({ showPlaylist, setShowPlaylist }: PlayListProps) => {
   const currentSong = useSelector(getCurrentSong);
   const playList = useSelector((state: RootState) => state.playState.playList);
   const dispatch = useDispatch();
+
+  const { isLiked, toggleLike } = useLike();
 
   // 点击切歌
   const selectItem = (song: Song) => {
@@ -108,7 +112,7 @@ export const PlayList = ({ showPlaylist, setShowPlaylist }: PlayListProps) => {
         <div className={'h-[350px] overflow-y-scroll'}>
           <div className={'h-fit'}>
             {playList.map((song, index) => (
-              <div key={song.id}>
+              <div key={index}>
                 <li
                   className={' flex list-none ml-3 mr-5 items-center'}
                   key={song.id}
@@ -131,8 +135,18 @@ export const PlayList = ({ showPlaylist, setShowPlaylist }: PlayListProps) => {
                       - {song.ar[0].name}
                     </span>
                   </span>
-                  <span className="mr-4 text-lg">
-                    <HeartOutlined />
+                  <span
+                    className="mr-4 text-lg"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleLike(song.id);
+                    }}
+                  >
+                    {isLiked(song.id) ? (
+                      <HeartFilled className={'text-red-500'} />
+                    ) : (
+                      <HeartOutlined />
+                    )}
                   </span>
                   <span
                     className="delete text-lg"

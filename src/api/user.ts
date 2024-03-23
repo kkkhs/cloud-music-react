@@ -7,5 +7,15 @@ export const fetchUserData = () => {
 
 // 用户详情
 export const fetchUserDetailData = (uid: number) => {
-  return axios.get('user/detail', { params: uid });
+  return axios.get('user/detail', { params: { uid } });
+};
+
+// 用户歌单
+export const fetchUserPlaylistData = (uid: number) => {
+  return axios.get('user/playlist', { params: { uid } });
+};
+
+// 每日推荐歌曲
+export const fetchDailySongsData = () => {
+  return axios.get('recommend/songs');
 };

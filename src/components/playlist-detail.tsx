@@ -6,11 +6,13 @@ import { Playlist } from '../types/playlist';
 import { NavBar, SpinLoading } from 'antd-mobile';
 import { DiffFilled, MessageFilled, MoreOutlined, ShareAltOutlined } from '@ant-design/icons';
 import { MusicList } from './music-list';
+import { useScrollListener } from '../utils/use-listen-scroll';
 
 export const PlaylistDetail = () => {
   const [playlist, setPlaylist] = useState<Playlist>();
   const { id } = useParams();
   const history = useNavigate();
+  const { scrollY, titleChange, scrollRef } = useScrollListener(120);
 
   useEffect(() => {
     fetchPlaylistDetailData(Number(id)).then((v) => {
@@ -22,7 +24,7 @@ export const PlaylistDetail = () => {
   return (
     <div className={'bg-gray-300 fixed top-0 bottom-0 left-0 right-0 z-10'}>
       <NavBar
-        className={' fixed mt-2 z-10 text-white w-full'}
+        className={`fixed pt-2 z-10 w-full transition-all ease-in-out duration-1000  ${titleChange ? 'bg-white text-black rounded-b-lg' : 'text-white'}`}
         onBack={back}
         right={<MoreOutlined className={'text-2xl'} />}
       >
@@ -37,7 +39,7 @@ export const PlaylistDetail = () => {
           <div className={'absolute left-0 top-0 w-full h-full -z-10 blur-[90px] scale-150'}>
             <img alt={'#'} className="w-full h-full" src={playlist.coverImgUrl} />
           </div>
-          <div className={'h-full overflow-y-scroll'}>
+          <div ref={scrollRef} className={'h-full overflow-y-scroll'}>
             <div className="middle pt-20 text-white px-4">
               <div className=" flex mb-3 min-h-28">
                 <img className=" h-28 w-28 rounded-2xl" src={playlist.coverImgUrl} />

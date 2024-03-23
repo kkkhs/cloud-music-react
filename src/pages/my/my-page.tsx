@@ -2,20 +2,37 @@ import { TopNavBar } from '../../components/top-nav-bar';
 import { useAuth } from '../../context/auth-context';
 import { ClockCircleFilled } from '@ant-design/icons';
 import { Outlet, useNavigate } from 'react-router-dom';
+import { useQuery } from 'react-query';
+import { fetchUserPlaylistData } from '../../api/user';
+import { Playlist } from '../../types/playlist';
+import { Playlists } from '../../components/playlists';
+import { useEffect } from 'react';
 
 export const MyPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-
+  const {
+    data: userPlaylist,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery<Playlist[]>(
+    ['userPlaylist', user],
+    () => fetchUserPlaylistData(user?.userId as number).then((res) => res.data.playlist),
+    {
+      enabled: user !== undefined,
+    },
+  );
+  console.log(userPlaylist?.[0]?.officialTags);
   return (
     <div className={'h-full w-full'}>
       <div className={'absolute text-white'}>
         <TopNavBar></TopNavBar>
       </div>
       {user !== undefined ? (
-        <div className={'h-full w-full'}>
+        <div className={'h-full w-full overflow-y-scroll'}>
           <img className={'absolute w-full -z-10'} src={user.backgroundUrl} />
-          <div className={'text-white flex flex-col items-center mb-5'}>
+          <div className={'text-white flex flex-col items-center mb-5 h-fit'}>
             <img className={'rounded-full w-24 h-24 mt-24 mb-5'} src={user.avatarUrl} />
             <div className={'text-2xl mb-4'}>{user.nickname}</div>
             <div className={'opacity-60 mb-5'}>
@@ -40,7 +57,11 @@ export const MyPage = () => {
               </div>
             </div>
           </div>
-          <div className={'h-full w-full bg-white rounded-t-2xl'}></div>
+          <div className={'h-fit w-full bg-white rounded-t-2xl'}>
+            <div className={'px-4 pt-4'}>
+              {userPlaylist !== undefined ? <Playlists playlists={userPlaylist} /> : null}
+            </div>
+          </div>
         </div>
       ) : (
         <div className={'h-full w-full'}>

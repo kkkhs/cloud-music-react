@@ -6,6 +6,7 @@ import { Mark } from '../utils/mark';
 import { Image } from 'antd-mobile';
 
 export const Playlists = ({ playlists }: { playlists: Playlist[] }) => {
+  console.log(playlists);
   const history = useNavigate();
   const searchState = useSelector((state: RootState) => state.searchState);
   const query = searchState.query;
@@ -32,7 +33,7 @@ export const Playlists = ({ playlists }: { playlists: Playlist[] }) => {
                   <Mark name={list.name} keyWord={query} />
                 </div>
                 <div className="line-clamp-1">
-                  {list?.score !== null ? (
+                  {list?.score ? (
                     <span className=" inline-block text-red-500 text-center w-fit border-solid border-[1px]  rounded text-xs font-medium border-red-300 leading-[14px] mr-1">
                       {list?.score}分
                     </span>
@@ -41,7 +42,7 @@ export const Playlists = ({ playlists }: { playlists: Playlist[] }) => {
                     {list.trackCount}首 ,by {list?.creator.nickname} ,播放{list.playCount}次
                   </span>
                 </div>
-                {list?.officialTags !== null ? (
+                {list?.officialTags ? (
                   <div>
                     {list.officialTags.map((tag, index) => (
                       <span
@@ -52,7 +53,7 @@ export const Playlists = ({ playlists }: { playlists: Playlist[] }) => {
                       </span>
                     ))}
                   </div>
-                ) : list.recommendText !== null ? (
+                ) : list.recommendText ? (
                   <div className="opacity-80">
                     <Mark name={list?.recommendText} keyWord={query} />
                   </div>
