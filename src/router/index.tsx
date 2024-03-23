@@ -19,6 +19,7 @@ import { useCookies } from 'react-cookie';
 import * as path from 'path';
 import { MyPlayHistory } from '../pages/my/my-play-history';
 import { MainPage } from '../pages/main-page';
+import { CommentMusic } from '../components/comment/comment-music';
 
 export const BaseRouter = () => {
   const navigate = useNavigate();

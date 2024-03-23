@@ -6,11 +6,12 @@ export const useLike = (): {
   isLoading: boolean;
   error: Error | unknown;
   isLiked: (id: number) => boolean;
-  toggleLike: (id: number, like: boolean) => void;
+  toggleLike: (id: number) => void;
 } => {
   const { user } = useAuth();
   const uid = user?.userId;
 
+  const queryClient = useQueryClient();
   const {
     data: likeList,
     isLoading,
@@ -38,27 +39,10 @@ export const useLike = (): {
     return likeList?.includes(id) ?? false;
   };
 
-  const toggleLike = async (id: number, like: boolean) => {
-    try {
-      // 更新 UI，乐观地添加或移除音乐
-      if (like) {
-        // 如果音乐已经在喜欢列表中，则不再重复添加
-        if (!likeList?.includes(id)) {
-          likeList.push(id);
-        }
-      } else {
-        // 如果音乐不在喜欢列表中，则不需要更新
-        const index = likeList?.indexOf(id);
-        if (index !== undefined && index !== -1) {
-          likeList.splice(index, 1);
-        }
-      }
-
-      // 执行添加或删除喜欢音乐的操作
-      await likeMutation.mutateAsync({ id, like });
-    } catch (error) {
-      console.error('Failed to toggle like:', error);
-    }
+  const toggleLike = (id: number) => {
+    const like = !likeList?.includes(id) ?? false;
+    // 执行添加或删除喜欢音乐的操作
+    likeMutation.mutateAsync({ id, like });
   };
 
   return {

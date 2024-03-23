@@ -31,7 +31,6 @@ export const useLyric = ({ songReady, currentTime }: UseLyricProps) => {
         const containerHeight = lyricContainerRef.current.offsetHeight; //获取歌词容器的高度
         const lineHeight = currentLineElement.offsetHeight; //获取当前行的高度
         const scrollOffset = currentLineElement.offsetTop - containerHeight / 2 + lineHeight / 2;
-        console.log(containerHeight, lineHeight, scrollOffset);
         lyricContainerRef.current.scrollTo({
           top: scrollOffset,
           behavior: 'smooth',

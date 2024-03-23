@@ -16,6 +16,7 @@ import { CSSTransition } from 'react-transition-group';
 import {
   BugOutlined,
   DashOutlined,
+  HeartFilled,
   HeartOutlined,
   MessageOutlined,
   MoreOutlined,
@@ -33,6 +34,8 @@ import { MiniPlayer } from './mini-player';
 import usePlayHistory from './use-play-history';
 import { PlayList } from './play-list';
 import { useLike } from './use-like';
+import { useNavigate } from 'react-router-dom';
+import { CommentMusic } from '../comment/comment-music';
 
 interface BarRef {
   setOffset: (offset: number) => void;
@@ -45,6 +48,7 @@ export const Player = () => {
   const [songReady, setSongReady] = useState(false);
   const [progressChanging, setProgressChanging] = useState(false);
   const [showPlaylist, setShowPlaylist] = useState(false);
+  const [showComment, setShowComment] = useState(false);
 
   // redux
   const playState = useSelector((state: RootState) => state.playState);
@@ -55,6 +59,7 @@ export const Player = () => {
   const playList = useSelector((state: RootState) => state.playState.playList);
   const playMode = useSelector((state: RootState) => state.playState.playMode);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // hooks
   const { changeMode } = useMode();
@@ -401,9 +406,16 @@ export const Player = () => {
                       ></span>
                     </div>
                     <div className={'flex text-2xl justify-between items-center px-14 mt-4 mb-2'}>
-                      <HeartOutlined />
+                      <div className={'text-2xl'} onClick={() => toggleLike(currentSong.id)}>
+                        {isLiked(currentSong.id) ? (
+                          <HeartFilled className={'text-red-500'} />
+                        ) : (
+                          <HeartOutlined />
+                        )}
+                      </div>
+
                       <BugOutlined />
-                      <MessageOutlined />
+                      <MessageOutlined onClick={() => setShowComment(true)} />
                       <MoreOutlined />
                     </div>
                     <div className=" flex items-center w-full my-0 mx-auto py-2 px-4">
@@ -455,6 +467,7 @@ export const Player = () => {
               setShowPlaylist={setShowPlaylist}
             />
           )}
+          <CommentMusic visible={showComment} setVisible={setShowComment} song={currentSong} />
           <PlayList showPlaylist={showPlaylist} setShowPlaylist={setShowPlaylist} />
           <audio
             ref={audioRef}

@@ -108,7 +108,7 @@ export const PlayList = ({ showPlaylist, setShowPlaylist }: PlayListProps) => {
         <div className={'h-[350px] overflow-y-scroll'}>
           <div className={'h-fit'}>
             {playList.map((song, index) => (
-              <>
+              <div key={song.id}>
                 <li
                   className={' flex list-none ml-3 mr-5 items-center'}
                   key={song.id}
@@ -145,7 +145,7 @@ export const PlayList = ({ showPlaylist, setShowPlaylist }: PlayListProps) => {
                   </span>
                 </li>
                 <hr className={'my-2'} />
-              </>
+              </div>
             ))}
           </div>
         </div>
