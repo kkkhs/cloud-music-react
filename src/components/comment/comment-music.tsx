@@ -70,8 +70,8 @@ export const CommentMusic = ({ visible, setVisible, song }: CommentMusicProps) =
                 }
               >
                 <span>评论区</span>
-                <span>
-                  最热 <FireFilled className={'text-red-500'} />
+                <span className='flex items-center'>
+                  最热 <FireFilled className={'text-red-500 ml-2'} />
                 </span>
               </div>
               <div>
@@ -90,8 +90,8 @@ export const CommentMusic = ({ visible, setVisible, song }: CommentMusicProps) =
                           <span className={'text-base font-semibold'}>{item?.user?.nickname}</span>
                           <span className={'opacity-70'}>{item.timeStr}</span>
                         </div>
-                        <div className={'text-base'}>
-                          {item.likedCount} <LikeOutlined />
+                        <div className={'text-sm flex items-start pt-1'}>
+                          {item.likedCount} <LikeOutlined className='ml-1 text-base flex items-center'/>
                         </div>
                       </div>
                       <div className={'text-sm'}>{item.content}</div>

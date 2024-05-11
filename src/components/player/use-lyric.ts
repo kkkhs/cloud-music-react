@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { getCurrentSong } from '../../store/reducers/playReducer';
 import { fetchLyricData } from '../../api/song';
 import Lyric from 'lyric-parser';
 import { Song } from '../../types/song';
-import BetterScroll, { BScrollInstance } from 'better-scroll';
 
 interface UseLyricProps {
   songReady: boolean;
@@ -13,6 +12,7 @@ interface UseLyricProps {
 }
 
 export const useLyric = ({ songReady, currentTime }: UseLyricProps) => {
+  console.log('useLyric');
   const [currentLyric, setCurrentLyric] = useState<null | Lyric>(null);
   const [currentLineNum, setCurrentLineNum] = useState(0);
   const [playingLyric, setPlayingLyric] = useState(''); // 正在播放的歌词
@@ -22,6 +22,7 @@ export const useLyric = ({ songReady, currentTime }: UseLyricProps) => {
 
   const lyricContainerRef = useRef<HTMLDivElement>(null);
 
+  // 歌词滚动
   useEffect(() => {
     if (lyricContainerRef.current && currentLineNum !== 0) {
       const currentLineElement = lyricContainerRef.current.querySelector(
@@ -37,10 +38,12 @@ export const useLyric = ({ songReady, currentTime }: UseLyricProps) => {
         });
       }
     }
+    console.log('currentLienNum：', currentLineNum);
   }, [currentLineNum]);
 
+  // 初始化
   useEffect(() => {
-    //防止切歌歌词跳动:
+    // 防止切歌歌词跳动:
     stopLyric();
     setCurrentLyric(null);
     setCurrentLineNum(0);
@@ -63,6 +66,7 @@ export const useLyric = ({ songReady, currentTime }: UseLyricProps) => {
   //歌词滚动函数
   function playLyric() {
     if (currentLyric) {
+      console.log(currentTime * 1000);
       currentLyric.seek(currentTime * 1000); //找到对应的歌词
     }
   }
@@ -75,7 +79,7 @@ export const useLyric = ({ songReady, currentTime }: UseLyricProps) => {
 
   // 歌词处理函数
   function handleLyric({ lineNum, txt }: { lineNum: number; txt: string }) {
-    // console.log(lineNum);
+    console.log('lineNum:', lineNum);
     setCurrentLineNum(lineNum);
     setPlayingLyric(txt); //当前播放歌词
   }

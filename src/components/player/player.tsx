@@ -1,5 +1,6 @@
 import React, { RefObject, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import './player.css'
 import { RootState } from '../../store';
 import { getCurrentSong } from '../../store/reducers/playReducer';
 import useMode from './use-mode';
@@ -77,13 +78,11 @@ export const Player = () => {
   const { savePlay } = usePlayHistory();
   const { isLiked, toggleLike } = useLike();
 
-  // console.log(currentLineNum);
-
   // 进度 0-1
   const progress = currentTime / (currentSong?.dt / 1000);
 
   useEffect(() => {
-    if (currentSong && currentSong.id) {
+    if (currentSong) {
       fetchSongUrl(currentSong.id).then((v) => {
         const songUrl = v.data.data[0].url;
         setCurrentTime(0);
@@ -113,9 +112,11 @@ export const Player = () => {
       if (playing) {
         audioEl.play();
         playLyric();
+        console.log('开始');
       } else {
         audioEl.pause();
         stopLyric();
+        console.log('停止');
       }
     }
   }, [playing, songReady, audioRef]);
@@ -341,7 +342,7 @@ export const Player = () => {
                     </h2>
                   </div>
                   <div
-                    className="middle fixed w-full top-20 bottom-40 whitespace-nowrap"
+                    className="middle fixed w-full top-20 bottom-52 whitespace-nowrap"
                     onTouchStart={onMiddleTouchStart}
                     onTouchMove={onMiddleTouchMove}
                     onTouchEnd={onMiddleTouchEnd}
@@ -405,8 +406,8 @@ export const Player = () => {
                         className={`inline-block align-middle my-0 mx-1 w-2 h-2 rounded-full bg-opacity-50 bg-white ${currentShow === 'lyric' ? 'w-4 bg-opacity-80' : ''}`}
                       ></span>
                     </div>
-                    <div className={'flex text-2xl justify-between items-center px-14 mt-4 mb-2'}>
-                      <div className={'text-2xl'} onClick={() => toggleLike(currentSong.id)}>
+                    <div className={'flex text-2xl justify-between items-center px-14 mt-5 mb-4'}>
+                      <div className={'text-2xl flex items-center'} onClick={() => toggleLike(currentSong.id)}>
                         {isLiked(currentSong.id) ? (
                           <HeartFilled className={'text-red-500'} />
                         ) : (
