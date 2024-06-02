@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { RootState } from '../../store';
 
 export default function useCd() {
@@ -8,7 +8,7 @@ export default function useCd() {
   const cdRef = useRef(null);
   const [cdCls, setCdCls] = useState(!!playing);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!playing && cdWrapperRef.current && cdRef.current) {
       syncTransform(cdWrapperRef.current, cdRef.current);
     }
